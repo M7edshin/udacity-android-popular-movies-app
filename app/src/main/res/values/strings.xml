@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Sofa Time</string>
+    <string name="sort_by">Sort by</string>
+    <string name="movie_poster">Movie Poster</string>
+    <string name="placeholder">TextView</string>
+    <string name="additional_details">Additional Details:</string>
+    <string name="released">Released:\t</string>
+    <string name="rating">Rating:\t</string>
+
+    <string-array name="sort_by">
+        <item>Most Popular</item>
+        <item>Highest Rated</item>
+    </string-array>
+
+</resources>
