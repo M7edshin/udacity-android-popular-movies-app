@@ -1,4 +1,4 @@
-## In order to test the code, please add your personal "The Movie Database API / https://www.themoviedb.org/" into the "gradle.properties" in project file > Add line API_KEY="Your API Digits"
+## In order to test the code, please add your personal "The Movie Database API / https://www.themoviedb.org/" into the "gradle.properties" in project files > Add line > API_KEY="Your API Digits"
 
 
 # Popular Movies, Stage 1
