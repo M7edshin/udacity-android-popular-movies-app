@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="m7edshin.popularmovieapp.MovieDetailsActivity"
     android:background="@color/colorPrimary">
+
+<android.support.constraint.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="m7edshin.popularmovieapp.MovieDetailsActivity">
 
     <ImageView
         android:id="@+id/iv_poster"
@@ -64,3 +68,5 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_release_date" />
 
 </android.support.constraint.ConstraintLayout>
+
+</ScrollView>

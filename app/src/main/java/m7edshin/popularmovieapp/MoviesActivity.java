@@ -36,18 +36,13 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
     private static final String LOG_TAG = MoviesActivity.class.getName();
     private static final int LOADER_ID = 1;
     private static final String MOVIE_API_REQUEST_URL = "https://api.themoviedb.org/3/movie/";
-    private static final String MOVIE_API_KEY = "-----------> ADD YOUR API KEY HERE <-----------";
+    private static final String MOVIE_API_KEY = BuildConfig.API_KEY;
 
     private DataCustomArrayAdapter dataCustomArrayAdapter;
 
     private String select = "Most Popular";
 
-    private final String MOVIE_TITLE = "movieTitle";
-    private final String MOVIE_RELEASE_DATE = "movieReleaseDate";
-    private final String MOVIE_POSTER = "moviePoster";
-    private final String MOVIE_VOTE = "movieVote";
-    private final String MOVIE_OVERVIEW= "movieOverview";
-
+    private final String MOVIE_OBJECT = "movie";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +61,7 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
                 Movie movie = dataCustomArrayAdapter.getItem(position);
                 Context context = MoviesActivity.this;
                 Intent movieDetailsIntent = new Intent(context, MovieDetailsActivity.class);
-                movieDetailsIntent.putExtra(MOVIE_TITLE, movie.getTitle());
-                movieDetailsIntent.putExtra(MOVIE_RELEASE_DATE, movie.getReleaseDate());
-                movieDetailsIntent.putExtra(MOVIE_POSTER, movie.getPoster());
-                movieDetailsIntent.putExtra(MOVIE_VOTE, movie.getVote());
-                movieDetailsIntent.putExtra(MOVIE_OVERVIEW, movie.getOverview());
+                movieDetailsIntent.putExtra(MOVIE_OBJECT, movie);
                 startActivity(movieDetailsIntent);
             }
         });

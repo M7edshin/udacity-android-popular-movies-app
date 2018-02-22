@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import m7edshin.popularmovieapp.Models.Movie;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
@@ -20,6 +21,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @BindView(R.id.tv_release_date) TextView tv_release_date;
     @BindView(R.id.tv_vote) TextView tv_vote;
     @BindView(R.id.iv_poster) ImageView iv_poster;
+
+    private final String MOVIE_OBJECT = "movie";
 
     private String movieTitle;
     private String movieReleaseDate;
@@ -33,20 +36,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_details);
         ButterKnife.bind(this);
 
-        final String MOVIE_TITLE = "movieTitle";
-        final String MOVIE_RELEASE_DATE = "movieReleaseDate";
-        final String MOVIE_POSTER = "moviePoster";
-        final String MOVIE_VOTE = "movieVote";
-        final String MOVIE_OVERVIEW= "movieOverview";
-
         Intent intentThatStartedThisActivity = getIntent();
 
-        if (intentThatStartedThisActivity.hasExtra(MOVIE_TITLE)) {
-            movieTitle = intentThatStartedThisActivity.getStringExtra(MOVIE_TITLE);
-            movieReleaseDate = intentThatStartedThisActivity.getStringExtra(MOVIE_RELEASE_DATE);
-            movieVote = intentThatStartedThisActivity.getStringExtra(MOVIE_VOTE);
-            moviePoster = intentThatStartedThisActivity.getStringExtra(MOVIE_POSTER);
-            movieOverview = intentThatStartedThisActivity.getStringExtra(MOVIE_OVERVIEW);
+        if (intentThatStartedThisActivity.hasExtra(MOVIE_OBJECT)) {
+            Movie movie = intentThatStartedThisActivity.getParcelableExtra(MOVIE_OBJECT);
+            movieTitle = movie.getTitle();
+            movieReleaseDate = movie.getReleaseDate();
+            movieVote = movie.getVote();
+            moviePoster = movie.getPoster();
+            movieOverview = movie.getOverview();
             populateMovieDetails();
         }
 
