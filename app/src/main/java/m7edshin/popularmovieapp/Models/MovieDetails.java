@@ -5,19 +5,20 @@ import android.os.Parcelable;
 
 /**
  * Created by Mohamed Shahin on 17/02/2018.
- * Movie Class Data
+ * MovieDetails Class for each movie's details
  */
 
-public class Movie implements Parcelable {
+public class MovieDetails implements Parcelable {
 
+    private String id;
     private String title;
     private String releaseDate;
     private String poster;
     private String vote;
     private String overview;
 
-
-    public Movie(String title, String releaseDate, String poster, String vote, String overview) {
+    public MovieDetails(String id, String title, String releaseDate, String poster, String vote, String overview) {
+        this.id = id;
         this.title = title;
         this.releaseDate = releaseDate;
         this.poster = poster;
@@ -25,25 +26,26 @@ public class Movie implements Parcelable {
         this.overview = overview;
     }
 
+    public String getId() {
+        return id;
+    }
     public String getTitle() {
         return title;
     }
-
     public String getReleaseDate() {
         return releaseDate;
     }
-
     public String getPoster() {
         return poster;
     }
-
     public String getVote() {
         return vote;
     }
-
     public String getOverview() {
         return overview;
     }
+
+
 
     @Override
     public int describeContents() {
@@ -52,6 +54,7 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeString(releaseDate);
         dest.writeString(poster);
@@ -59,7 +62,8 @@ public class Movie implements Parcelable {
         dest.writeString(overview);
     }
 
-    private Movie(Parcel in){
+    private MovieDetails(Parcel in){
+        this.id = in.readString();
         this.title = in.readString();
         this.releaseDate = in.readString();
         this.poster = in.readString();
@@ -67,16 +71,16 @@ public class Movie implements Parcelable {
         this.overview = in.readString();
     }
 
-    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>(){
+    public static final Parcelable.Creator<MovieDetails> CREATOR = new Parcelable.Creator<MovieDetails>(){
 
         @Override
-        public Movie createFromParcel(Parcel source) {
-            return new Movie(source);
+        public MovieDetails createFromParcel(Parcel source) {
+            return new MovieDetails(source);
         }
 
         @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
+        public MovieDetails[] newArray(int size) {
+            return new MovieDetails[size];
         }
     };
 }

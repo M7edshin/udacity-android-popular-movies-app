@@ -12,17 +12,18 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import m7edshin.popularmovieapp.Models.Movie;
+import m7edshin.popularmovieapp.Models.MovieDetails;
+import m7edshin.popularmovieapp.Models.MovieReview;
 
 /**
  * Created by Mohamed Shahin on 17/02/2018.
- * Steps for HTTP request to the API
+ * Network request and operation
+ * Steps for HTTP request for the API
  */
 
 class NetworkingRequest {
 
     private static final String LOG_TAG = NetworkingRequest.class.getName();
-
 
     //Http Request
     private static String makeHttpRequest(URL url) throws IOException {
@@ -82,9 +83,12 @@ class NetworkingRequest {
         return ur1;
     }
 
-    static List<Movie> fetchMovieData(String requestJsonUrl) {
-
-        Log.i(LOG_TAG, "Performing: Method fetchMovieData is called");
+    /**
+     * Fetch Movie Details
+     * @param requestJsonUrl Json URL
+     * @return List of movie objects
+     */
+    static List<MovieDetails> fetchMovieData(String requestJsonUrl) {
 
         String jsonResponse = "";
 
@@ -93,9 +97,48 @@ class NetworkingRequest {
         try {
             jsonResponse = makeHttpRequest(url);
         } catch (IOException e) {
-            Log.v(LOG_TAG, "Error: Problem occurred in fetching movie data from json through the request");
+            Log.v(LOG_TAG, "Error: Problem occurred in fetching movie details through the request");
         }
 
-        return JsonMovieData.extractJsonMovieData(jsonResponse);
+        return JsonMovieDetails.extractJsonMovieData(jsonResponse);
+    }
+
+    /**
+     * Fetch Movies Videos Keys
+     * @param requestJsonUrl Json URL
+     * @return List of Movies Videos Keys
+     */
+    static List<String> fetchMovieVideosKeys(String requestJsonUrl){
+
+        String jsonResponse = "";
+
+        URL url = createURL(requestJsonUrl);
+
+        try{
+            jsonResponse = makeHttpRequest(url);
+        }catch (Exception e){
+            Log.v(LOG_TAG, "Error: Problem occurred in fetching movies videos keys through the request");
+        }
+
+        return JsonMovieExtraDetails.extractJsonMovieVideoKey(jsonResponse);
+    }
+
+    /**
+     * Fetch Movies Reviews
+     * @param requestJsonUrl Json URL
+     * @return List of movie reviews
+     */
+    static List<MovieReview> fetchMovieReviews(String requestJsonUrl){
+
+        String jsonResponse = "";
+
+        URL url = createURL(requestJsonUrl);
+
+        try{
+            jsonResponse = makeHttpRequest(url);
+        }catch (Exception e){
+            Log.v(LOG_TAG, "Error: Problem occurred in fetching movie reviews through the request");
+        }
+        return JsonMovieExtraDetails.extractJsonMovieReviews(jsonResponse);
     }
 }

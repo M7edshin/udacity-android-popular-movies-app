@@ -9,13 +9,13 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
@@ -24,25 +24,27 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import m7edshin.popularmovieapp.Models.Movie;
-import m7edshin.popularmovieapp.Utilities.DataCustomArrayAdapter;
-import m7edshin.popularmovieapp.Utilities.DataLoader;
+import m7edshin.popularmovieapp.CustomAdapters.MoviesRecyclerAdapter;
+import m7edshin.popularmovieapp.InterfaceUtilities.ColumnsFitting;
+import m7edshin.popularmovieapp.InterfaceUtilities.RecyclerViewTouchListener;
+import m7edshin.popularmovieapp.Models.MovieDetails;
+import m7edshin.popularmovieapp.Utilities.MovieDetailsLoader;
 
 
-public class MoviesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>> {
+public class MoviesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<MovieDetails>> {
 
-    @BindView(R.id.grid_view_movies) GridView grid_view_movies;
+    @BindView(R.id.recycle_view_movies) RecyclerView recycle_view_movies;
 
-    private static final String LOG_TAG = MoviesActivity.class.getName();
     private static final int LOADER_ID = 1;
     private static final String MOVIE_API_REQUEST_URL = "https://api.themoviedb.org/3/movie/";
     private static final String MOVIE_API_KEY = BuildConfig.API_KEY;
 
-    private DataCustomArrayAdapter dataCustomArrayAdapter;
+    private MoviesRecyclerAdapter moviesRecyclerAdapter;
 
     private String select = "Most Popular";
+    private final String MOVIE_INTENT_KEY = "movie";
 
-    private final String MOVIE_OBJECT = "movie";
+    private List<MovieDetails> moviesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,43 +52,49 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
         setContentView(R.layout.activity_movies);
         ButterKnife.bind(this);
 
-        dataCustomArrayAdapter = new DataCustomArrayAdapter(this, new ArrayList<Movie>());
-        grid_view_movies.setAdapter(dataCustomArrayAdapter);
+        //RecyclerView setup
+        int numberOfColumns = ColumnsFitting.calculateNoOfColumns(this);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, numberOfColumns);
+        recycle_view_movies.setLayoutManager(layoutManager);
 
         fetchMovieData();
 
-        grid_view_movies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Movie movie = dataCustomArrayAdapter.getItem(position);
-                Context context = MoviesActivity.this;
-                Intent movieDetailsIntent = new Intent(context, MovieDetailsActivity.class);
-                movieDetailsIntent.putExtra(MOVIE_OBJECT, movie);
-                startActivity(movieDetailsIntent);
-            }
-        });
+        recycle_view_movies.addOnItemTouchListener(new RecyclerViewTouchListener
+                (this,recycle_view_movies, new RecyclerViewTouchListener.ClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        MovieDetails movieDetails = moviesList.get(position);
+                        Context context = MoviesActivity.this;
+                        Intent movieDetailsIntent = new Intent(context, MovieDetailsActivity.class);
+                        movieDetailsIntent.putExtra(MOVIE_INTENT_KEY, movieDetails);
+                        startActivity(movieDetailsIntent);
+                    }
+
+                    @Override
+                    public void onLongClick(View view, int position) {
+
+                    }
+                }));
     }
 
     @Override
-    public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
-        Log.i(LOG_TAG, "Performing: Method onCreateLoader is called");
+    public Loader<List<MovieDetails>> onCreateLoader(int id, Bundle args) {
         String query = createUrlRequest(select);
-        return new DataLoader(this, query);
+        return new MovieDetailsLoader(this, query);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
-        Log.i(LOG_TAG, "Performing: Method onLoadFinished is called");
-        dataCustomArrayAdapter.clear();
+    public void onLoadFinished(Loader<List<MovieDetails>> loader, List<MovieDetails> data) {
         if (data != null && !data.isEmpty()) {
-            dataCustomArrayAdapter.addAll(data);
+            moviesList = data;
+            moviesRecyclerAdapter = new MoviesRecyclerAdapter(moviesList);
+            recycle_view_movies.setAdapter(moviesRecyclerAdapter);
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Movie>> loader) {
-        Log.i(LOG_TAG, "Performing: Method onLoaderReset is called");
-        dataCustomArrayAdapter.clear();
+    public void onLoaderReset(Loader<List<MovieDetails>> loader) {
+        moviesRecyclerAdapter = new MoviesRecyclerAdapter(new ArrayList<MovieDetails>());
     }
 
     private void fetchMovieData() {

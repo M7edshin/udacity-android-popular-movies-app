@@ -10,31 +10,33 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import m7edshin.popularmovieapp.Models.Movie;
+import m7edshin.popularmovieapp.Models.MovieDetails;
 
 /**
  * Created by Mohamed Shahin on 17/02/2018.
- * Json data extracting
+ * Json movie details data extracting
  */
 
-class JsonMovieData {
+public class JsonMovieDetails {
 
-    private static final String LOG_TAG = JsonMovieData.class.getName();
+    private static final String LOG_TAG = JsonMovieDetails.class.getName();
 
     private static final String NO_DATA = "N/A";
     private static final String KEY_RESULTS = "results";
+    private static final String KEY_ID = "id";
     private static final String KEY_TITLE = "title";
     private static final String KEY_RELEASE_DATE = "release_date";
     private static final String KEY_POSTER_PATH = "poster_path";
     private static final String KEY_VOTE = "vote_average";
     private static final String KEY_OVERVIEW = "overview";
 
-    static List<Movie> extractJsonMovieData(String json) {
+    public static List<MovieDetails> extractJsonMovieData(String json) {
 
         if (TextUtils.isEmpty(json)) return null;
 
-        List<Movie> movieList = new ArrayList<>();
+        List<MovieDetails> movieDetailsList = new ArrayList<>();
 
+        String id = NO_DATA;
         String title = NO_DATA;
         String releaseDate = NO_DATA;
         String poster = NO_DATA;
@@ -50,6 +52,9 @@ class JsonMovieData {
 
                 JSONObject object = resultsArray.getJSONObject(i);
 
+                if(object.has(KEY_ID)){
+                  id = object.optString(KEY_ID);
+                }
                 if (object.has(KEY_TITLE)) {
                     title = object.optString(KEY_TITLE);
                 }
@@ -66,16 +71,16 @@ class JsonMovieData {
                     overview = object.optString(KEY_OVERVIEW);
                 }
 
-                Movie movie = new Movie(title, releaseDate, poster, vote, overview);
+                MovieDetails movieDetails = new MovieDetails(id, title, releaseDate, poster, vote, overview);
 
-                movieList.add(movie);
+                movieDetailsList.add(movieDetails);
             }
 
         } catch (JSONException e) {
-            Log.v(LOG_TAG, "Error: Problem occurred during extracting Json Movie Data");
+            Log.v(LOG_TAG, "Error: Problem occurred during extracting Json MovieDetails Data");
         }
 
-        return movieList;
+        return movieDetailsList;
     }
 
 
