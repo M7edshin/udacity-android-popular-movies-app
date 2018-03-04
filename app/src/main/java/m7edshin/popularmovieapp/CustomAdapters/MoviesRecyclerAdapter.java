@@ -14,6 +14,8 @@ import java.util.List;
 import m7edshin.popularmovieapp.Models.MovieDetails;
 import m7edshin.popularmovieapp.R;
 
+import static m7edshin.popularmovieapp.Utilities.Constants.POSTER_PATH;
+
 /**
  * Created by Mohamed Shahin on 02/03/2018.
  * Data Holder for movie details
@@ -37,8 +39,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
     @Override
     public void onBindViewHolder(MoviesHolder holder, int position) {
         MovieDetails movieDetails = moviesList.get(position);
-        String poster_path = "http://image.tmdb.org/t/p/w185";
-        String createPosterPath = poster_path + movieDetails.getPoster();
+        String createPosterPath = POSTER_PATH + movieDetails.getPoster();
         Context context = holder.iv_movie_image.getContext();
         Picasso.with(context).load(createPosterPath).into(holder.iv_movie_image);
     }

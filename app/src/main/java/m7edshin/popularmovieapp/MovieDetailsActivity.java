@@ -1,7 +1,11 @@
 package m7edshin.popularmovieapp;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.LoaderManager;
@@ -15,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -29,26 +34,38 @@ import m7edshin.popularmovieapp.InterfaceUtilities.RecyclerViewTouchListener;
 import m7edshin.popularmovieapp.Models.MovieDetails;
 import m7edshin.popularmovieapp.Models.MovieExtraDetails;
 import m7edshin.popularmovieapp.Models.MovieReview;
+import m7edshin.popularmovieapp.MoviesDatabase.DbSQLiteOpenHelper;
 import m7edshin.popularmovieapp.Utilities.MovieExtraDetailsLoader;
+
+import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.COLUMN_POSTER_PATH;
+import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.COLUMN_RATING;
+import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.COLUMN_RELEASE_DATE;
+import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.COLUMN_SYNOPSIS;
+import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.COLUMN_TITLE;
+import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.CONTENT_URI;
+import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.TABLE_NAME;
+import static m7edshin.popularmovieapp.Utilities.Constants.LOADER_MANAGER_ID;
+import static m7edshin.popularmovieapp.Utilities.Constants.MOVIE_API_URL;
+import static m7edshin.popularmovieapp.Utilities.Constants.POSTER_PATH;
 
 public class MovieDetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<MovieExtraDetails> {
 
-    @BindView(R.id.tv_overview) TextView tv_overview;
+    @BindView(R.id.tv_synopsis) TextView tv_synopsis;
     @BindView(R.id.tv_release_date) TextView tv_release_date;
     @BindView(R.id.tv_vote) TextView tv_vote;
     @BindView(R.id.iv_poster) ImageView iv_poster;
     @BindView(R.id.rv_trailers) RecyclerView rv_trailers;
     @BindView(R.id.rv_reviews) RecyclerView rv_reviews;
+    @BindView(R.id.iv_favorite) ImageView iv_favorite;
+    @BindView(R.id.iv_share) ImageView iv_share;
 
     private String movieID;
     private String movieTitle;
     private String movieReleaseDate;
-    private String movieVote;
+    private String movieRating;
     private String moviePoster;
-    private String movieOverview;
+    private String movieSynopsis;
 
-    private static final int LOADER_ID = 1;
-    private static final String MOVIE_API_APPENDED_URL = "https://api.themoviedb.org/3/movie/";
     private static final String MOVIE_API_KEY = BuildConfig.API_KEY;
 
     private List<String> videoKeyList;
@@ -74,22 +91,45 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             movieID = movieDetails.getId();
             movieTitle = movieDetails.getTitle();
             movieReleaseDate = movieDetails.getReleaseDate();
-            movieVote = movieDetails.getVote();
+            movieRating = movieDetails.getVote();
             moviePoster = movieDetails.getPoster();
-            movieOverview = movieDetails.getOverview();
+            movieSynopsis = movieDetails.getSynopsis();
             populateMovieDetails();
             populateExtraMovieDetails();
         }
 
+        iv_favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveMovieDetails();
+            }
+        });
+
+        iv_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String key = videoKeyList.get(0);
+                if(!key.isEmpty()){
+                    String shareBody = "http://www.youtube.com/watch?v=" + videoKeyList.get(0);
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Youtube");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                    startActivity(Intent.createChooser(sharingIntent, "Enjoy"));
+                }else{
+                    Toast.makeText(getApplicationContext(), "No trailer available", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
     private void populateMovieDetails() {
-        final String poster_path = "http://image.tmdb.org/t/p/w185";
-        String createPosterPath = poster_path + moviePoster;
+        String createPosterPath = POSTER_PATH + moviePoster;
 
-        tv_overview.setText(movieOverview);
+        tv_synopsis.setText(movieSynopsis);
         tv_release_date.setText(String.format("%s%s", getString(R.string.released), movieReleaseDate));
-        tv_vote.setText(String.format("%s%s", getString(R.string.rating), movieVote));
+        tv_vote.setText(String.format("%s%s", getString(R.string.rating), movieRating));
 
         Picasso.with(this).load(createPosterPath).into(iv_poster);
 
@@ -106,7 +146,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
 
     private String createAPIUrl(String movieID){
 
-        Uri baseUri = Uri.parse(MOVIE_API_APPENDED_URL);
+        Uri baseUri = Uri.parse(MOVIE_API_URL);
         Uri.Builder builder = baseUri.buildUpon();
         builder.appendPath(movieID)
                 .appendQueryParameter("api_key", MOVIE_API_KEY)
@@ -147,7 +187,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
 
     private void populateExtraMovieDetails(){
         LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(LOADER_ID, null, MovieDetailsActivity.this);
+        loaderManager.initLoader(LOADER_MANAGER_ID, null, MovieDetailsActivity.this);
     }
 
     @Override
@@ -164,6 +204,36 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         } catch (Exception ex) {
             context.startActivity(openBrowserIntent);
         }
+    }
+
+    private void saveMovieDetails(){
+
+        DbSQLiteOpenHelper dbSQLiteOpenHelper = new DbSQLiteOpenHelper(this);
+        SQLiteDatabase database = dbSQLiteOpenHelper.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + "Title = '" + movieTitle + "'";
+        Cursor cursor = database.rawQuery(query, null);
+        if(cursor.getCount() > 0){
+            cursor.close();
+            Toast.makeText(getApplicationContext(), "Movie is already in your Fav", Toast.LENGTH_SHORT).show();
+        }else {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_TITLE, movieTitle);
+            values.put(COLUMN_SYNOPSIS, movieSynopsis);
+            values.put(COLUMN_RATING, movieRating);
+            values.put(COLUMN_RELEASE_DATE, movieReleaseDate);
+            values.put(COLUMN_POSTER_PATH, moviePoster);
+
+            Uri newUri = getContentResolver().insert(CONTENT_URI, values);
+
+            if(newUri == null){
+                Toast.makeText(this, "Error occurred to save this Movie", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "Movie has been saved", Toast.LENGTH_SHORT).show();
+            }
+
+            cursor.close();
+        }
+
     }
 
 }

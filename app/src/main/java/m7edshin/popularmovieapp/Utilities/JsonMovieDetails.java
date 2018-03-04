@@ -12,6 +12,8 @@ import java.util.List;
 
 import m7edshin.popularmovieapp.Models.MovieDetails;
 
+import static m7edshin.popularmovieapp.Utilities.Constants.NO_DATA;
+
 /**
  * Created by Mohamed Shahin on 17/02/2018.
  * Json movie details data extracting
@@ -21,7 +23,6 @@ public class JsonMovieDetails {
 
     private static final String LOG_TAG = JsonMovieDetails.class.getName();
 
-    private static final String NO_DATA = "N/A";
     private static final String KEY_RESULTS = "results";
     private static final String KEY_ID = "id";
     private static final String KEY_TITLE = "title";

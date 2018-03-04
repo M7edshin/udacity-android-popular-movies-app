@@ -30,13 +30,14 @@ import m7edshin.popularmovieapp.InterfaceUtilities.RecyclerViewTouchListener;
 import m7edshin.popularmovieapp.Models.MovieDetails;
 import m7edshin.popularmovieapp.Utilities.MovieDetailsLoader;
 
+import static m7edshin.popularmovieapp.Utilities.Constants.LOADER_MANAGER_ID;
+import static m7edshin.popularmovieapp.Utilities.Constants.MOVIE_API_URL;
+
 
 public class MoviesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<MovieDetails>> {
 
     @BindView(R.id.recycle_view_movies) RecyclerView recycle_view_movies;
 
-    private static final int LOADER_ID = 1;
-    private static final String MOVIE_API_REQUEST_URL = "https://api.themoviedb.org/3/movie/";
     private static final String MOVIE_API_KEY = BuildConfig.API_KEY;
 
     private MoviesRecyclerAdapter moviesRecyclerAdapter;
@@ -103,7 +104,7 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
 
         if (isConnected) {
             LoaderManager loaderManager = getLoaderManager();
-            loaderManager.initLoader(LOADER_ID, null, MoviesActivity.this);
+            loaderManager.initLoader(LOADER_MANAGER_ID, null, MoviesActivity.this);
         }
 
     }
@@ -115,7 +116,7 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     private String createUrlRequest(String sortBy) {
-        Uri baseUri = Uri.parse(MOVIE_API_REQUEST_URL);
+        Uri baseUri = Uri.parse(MOVIE_API_URL);
         Uri.Builder builder = baseUri.buildUpon();
         builder.appendPath(sortBy)
                 .appendQueryParameter("api_key", MOVIE_API_KEY);
@@ -137,8 +138,11 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
                 select = (String) spinnerAdapter.getItem(position);
                 if (select.equalsIgnoreCase("Most Popular")) select = "popular";
                 if (select.equalsIgnoreCase("Highest Rated")) select = "top_rated";
+                if(select.equalsIgnoreCase("Favorite Movies")){
+                    startActivity(new Intent(getApplicationContext(), FavoriteMoviesActivity.class));
+                }
                 LoaderManager loaderManager = getLoaderManager();
-                loaderManager.restartLoader(LOADER_ID, null, MoviesActivity.this);
+                loaderManager.restartLoader(LOADER_MANAGER_ID, null, MoviesActivity.this);
             }
 
             @Override

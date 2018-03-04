@@ -12,6 +12,8 @@ import java.util.List;
 
 import m7edshin.popularmovieapp.Models.MovieReview;
 
+import static m7edshin.popularmovieapp.Utilities.Constants.NO_DATA;
+
 /**
  * Created by Mohamed Shahin on 25/02/2018.
  * Json movie extra details (Trailer & Reviews) data extracting
@@ -20,7 +22,6 @@ import m7edshin.popularmovieapp.Models.MovieReview;
 public class JsonMovieExtraDetails {
 
     private final static String LOG_TAG = JsonMovieExtraDetails.class.getName();
-    private static final String NO_DATA = "N/A";
 
     private static final String KEY_VIDEOS = "videos";
     private static final String KEY_RESULTS = "results";
