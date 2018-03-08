@@ -1,16 +1,15 @@
 package m7edshin.popularmovieapp;
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.LoaderManager;
 import android.support.v4.app.NavUtils;
-import android.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -186,7 +185,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     }
 
     private void populateExtraMovieDetails(){
-        LoaderManager loaderManager = getLoaderManager();
+        LoaderManager loaderManager = this.getLoaderManager();
         loaderManager.initLoader(LOADER_MANAGER_ID, null, MovieDetailsActivity.this);
     }
 
