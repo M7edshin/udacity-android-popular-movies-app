@@ -3,4 +3,4 @@
     android:id="@+id/recycle_view_movies"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"/>
+    android:background="@color/colorPrimary" />

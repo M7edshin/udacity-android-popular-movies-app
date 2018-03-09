@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_width="wrap_content">
 
-    <ImageView
-        android:id="@+id/iv_play"
-        android:layout_weight="0"
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/btn_trailer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher_background"
-        android:layout_gravity="center"/>
+        android:layout_marginBottom="10dp"
+        android:padding="10dp"
+        android:layout_margin="3dp"
+        fancy:fb_borderColor="#FFFFFF"
+        fancy:fb_borderWidth="2dp"
+        fancy:fb_defaultColor="#3b414f"
+        fancy:fb_focusColor="#8cc9f8"
+        fancy:fb_fontIconSize="25sp"
+        fancy:fb_iconPosition="bottom"
+        fancy:fb_radius="10dp"
+        fancy:fb_text="@string/trailer"
+        fancy:fb_textColor="#FFFFFF">
+    </mehdi.sakout.fancybuttons.FancyButton>
 
-    <TextView
-        android:id="@+id/tv_name"
-        android:layout_weight="4"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/placeholder"
-        android:layout_gravity="center"/>
-</LinearLayout>
+</FrameLayout>
+
