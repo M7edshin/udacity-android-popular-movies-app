@@ -14,12 +14,15 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.borjabravo.readmoretextview.ReadMoreTextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -49,14 +52,12 @@ import static m7edshin.popularmovieapp.Utilities.Constants.POSTER_PATH;
 
 public class MovieDetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<MovieExtraDetails> {
 
-    @BindView(R.id.tv_synopsis) TextView tv_synopsis;
+    @BindView(R.id.tv_synopsis) ReadMoreTextView tv_synopsis;
     @BindView(R.id.tv_release_date) TextView tv_release_date;
-    @BindView(R.id.tv_vote) TextView tv_vote;
     @BindView(R.id.iv_poster) ImageView iv_poster;
     @BindView(R.id.rv_trailers) RecyclerView rv_trailers;
     @BindView(R.id.rv_reviews) RecyclerView rv_reviews;
-    @BindView(R.id.iv_favorite) ImageView iv_favorite;
-    @BindView(R.id.iv_share) ImageView iv_share;
+    @BindView(R.id.rating_bar) RatingBar rating_bar;
 
     private String movieID;
     private String movieTitle;
@@ -76,7 +77,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         setContentView(R.layout.activity_movie_details);
         ButterKnife.bind(this);
 
-        RecyclerView.LayoutManager trailersLayoutManager = new LinearLayoutManager(this);
+        ActionBar actionBar = this.getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        RecyclerView.LayoutManager trailersLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rv_trailers.setLayoutManager(trailersLayoutManager);
 
         RecyclerView.LayoutManager reviewsLayoutManager = new LinearLayoutManager(this);
@@ -97,38 +103,14 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             populateExtraMovieDetails();
         }
 
-        iv_favorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveMovieDetails();
-            }
-        });
-
-        iv_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String key = videoKeyList.get(0);
-                if(!key.isEmpty()){
-                    String shareBody = "http://www.youtube.com/watch?v=" + videoKeyList.get(0);
-                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    sharingIntent.setType("text/plain");
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Youtube");
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                    startActivity(Intent.createChooser(sharingIntent, "Enjoy"));
-                }else{
-                    Toast.makeText(getApplicationContext(), "No trailer available", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
     }
 
     private void populateMovieDetails() {
         String createPosterPath = POSTER_PATH + moviePoster;
 
         tv_synopsis.setText(movieSynopsis);
-        tv_release_date.setText(String.format("%s%s", getString(R.string.released), movieReleaseDate));
-        tv_vote.setText(String.format("%s%s", getString(R.string.rating), movieRating));
+        tv_release_date.setText(String.format("%s%s", getString(R.string.release), movieReleaseDate));
+        rating_bar.setRating(Float.parseFloat(movieRating)/2);
 
         Picasso.with(this).load(createPosterPath).into(iv_poster);
 
@@ -137,9 +119,22 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.movie_details_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == android.R.id.home) NavUtils.navigateUpFromSameTask(this);
+
+        if (id == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
+        } else if (id == R.id.action_share) {
+            share();
+        }else if(id == R.id.action_favorite){
+            saveMovieDetails();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -211,9 +206,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         SQLiteDatabase database = dbSQLiteOpenHelper.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + "Title = '" + movieTitle + "'";
         Cursor cursor = database.rawQuery(query, null);
+
         if(cursor.getCount() > 0){
             cursor.close();
             Toast.makeText(getApplicationContext(), "Movie is already in your Fav", Toast.LENGTH_SHORT).show();
+            database.close();
         }else {
             ContentValues values = new ContentValues();
             values.put(COLUMN_TITLE, movieTitle);
@@ -231,8 +228,24 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             }
 
             cursor.close();
+            database.close();
         }
 
+    }
+
+    private void share(){
+        String key = videoKeyList.get(0);
+        if(!key.isEmpty()){
+            String shareBody = "http://www.youtube.com/watch?v=" + videoKeyList.get(0);
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Youtube");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+            startActivity(Intent.createChooser(sharingIntent, "Enjoy"));
+
+        }else{
+            Toast.makeText(getApplicationContext(), "No trailer available", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

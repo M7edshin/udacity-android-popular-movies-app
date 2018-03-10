@@ -27,5 +27,9 @@ public class MainActivity extends AppCompatActivity {
 
         pager_sliding_tabs.setViewPager(view_pager);
 
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.hollywood);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
     }
 }

@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 
+import com.borjabravo.readmoretextview.ReadMoreTextView;
 import com.squareup.picasso.Picasso;
 
 import m7edshin.popularmovieapp.R;
@@ -67,8 +69,8 @@ public class MoviesCursorAdapter extends RecyclerView.Adapter<MoviesCursorAdapte
     public class FavMoviesViewHolder extends RecyclerView.ViewHolder{
         ImageView iv_fav_poster;
         TextView tv_fav_title;
-        TextView tv_synopsis;
-        TextView tv_fav_rating;
+        ReadMoreTextView tv_synopsis;
+        RatingBar rating_bar;
         TextView tv_fav_release_date;
 
         public FavMoviesViewHolder(View itemView) {
@@ -76,7 +78,7 @@ public class MoviesCursorAdapter extends RecyclerView.Adapter<MoviesCursorAdapte
             iv_fav_poster = itemView.findViewById(R.id.iv_fav_poster);
             tv_fav_title = itemView.findViewById(R.id.tv_fav_title);
             tv_synopsis = itemView.findViewById(R.id.tv_synopsis);
-            tv_fav_rating = itemView.findViewById(R.id.tv_fav_rating);
+            rating_bar = itemView.findViewById(R.id.rating_bar);
             tv_fav_release_date = itemView.findViewById(R.id.tv_fav_release_date);
         }
 
@@ -85,8 +87,9 @@ public class MoviesCursorAdapter extends RecyclerView.Adapter<MoviesCursorAdapte
             Picasso.with(itemView.getContext()).load(path).into(iv_fav_poster);
             tv_fav_title.setText(title);
             tv_synopsis.setText(synopsis);
-            tv_fav_rating.setText(rating);
             tv_fav_release_date.setText(releaseDate);
+            rating_bar.setRating(Float.parseFloat(rating)/2);
+
         }
     }
 

@@ -3,10 +3,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/linear_layout_main_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
     android:orientation="vertical"
     tools:context="m7edshin.popularmovieapp.MovieDetailsActivity">
 
@@ -15,6 +13,7 @@
         android:id="@+id/pager_sliding_tabs"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
         app:pstsTabTextColor="@color/colorWhite"
         app:pstsIndicatorColor="@color/colorAccent"
         app:pstsTabTextSize="12sp"/>
@@ -22,7 +21,6 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

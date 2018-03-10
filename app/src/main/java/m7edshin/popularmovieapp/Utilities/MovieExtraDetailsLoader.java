@@ -23,7 +23,7 @@ public class MovieExtraDetailsLoader extends AsyncTaskLoader<MovieExtraDetails> 
     }
 
     @Override
-    protected void onStartLoading() {;
+    protected void onStartLoading() {
         forceLoad();
     }
 

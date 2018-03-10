@@ -29,6 +29,7 @@ import m7edshin.popularmovieapp.Utilities.MovieDetailsLoader;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -46,6 +47,9 @@ public class NowPlayingMoviesFragment extends Fragment implements LoaderManager.
 
     @BindView(R.id.recycle_view_movies)
     RecyclerView recycle_view_movies;
+    @BindView(R.id.tv_no_connection)
+    TextView tv_no_connection;
+
 
     private static final String MOVIE_API_KEY = BuildConfig.API_KEY;
 
@@ -63,6 +67,7 @@ public class NowPlayingMoviesFragment extends Fragment implements LoaderManager.
 
         View rootView = inflater.inflate(R.layout.fragment_movies, container,false);
         ButterKnife.bind(this, rootView);
+        tv_no_connection.setVisibility(View.INVISIBLE);
 
         //RecyclerView setup
         int numberOfColumns = ColumnsFitting.calculateNoOfColumns(getActivity());
@@ -105,6 +110,8 @@ public class NowPlayingMoviesFragment extends Fragment implements LoaderManager.
             moviesList = data;
             moviesRecyclerAdapter = new MoviesRecyclerAdapter(moviesList);
             recycle_view_movies.setAdapter(moviesRecyclerAdapter);
+        }else{
+            tv_no_connection.setVisibility(View.VISIBLE);
         }
     }
 
@@ -118,8 +125,11 @@ public class NowPlayingMoviesFragment extends Fragment implements LoaderManager.
         boolean isConnected = checkInternetConnection();
 
         if (isConnected) {
+            tv_no_connection.setVisibility(View.INVISIBLE);
             android.support.v4.app.LoaderManager loaderManager = getLoaderManager();
             loaderManager.initLoader(LOADER_MANAGER_ID, null, NowPlayingMoviesFragment.this);
+        }else{
+            tv_no_connection.setVisibility(View.VISIBLE);
         }
 
     }

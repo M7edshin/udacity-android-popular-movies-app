@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
@@ -35,6 +36,7 @@ import static m7edshin.popularmovieapp.Utilities.Constants.LOADER_MANAGER_ID;
 public class FavoriteMoviesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     @BindView(R.id.recycle_view_movies) RecyclerView recycle_view_movies;
+    @BindView(R.id.tv_no_connection) TextView tv_no_connection;
 
     private MoviesCursorAdapter moviesCursorAdapter;
     private DbSQLiteOpenHelper dbSQLiteOpenHelper;
@@ -48,6 +50,8 @@ public class FavoriteMoviesFragment extends Fragment implements LoaderManager.Lo
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
         ButterKnife.bind(this, rootView);
 
+        tv_no_connection.setVisibility(View.INVISIBLE);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recycle_view_movies.setLayoutManager(layoutManager);
 
@@ -57,6 +61,10 @@ public class FavoriteMoviesFragment extends Fragment implements LoaderManager.Lo
         recycle_view_movies.addOnItemTouchListener(new RecyclerViewTouchListener(getActivity(), recycle_view_movies, new RecyclerViewTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
                 if(cursor.moveToPosition(position)){
                     int idColumnIndex = cursor.getColumnIndex(_ID);
                     String id = cursor.getString(idColumnIndex);
@@ -64,11 +72,6 @@ public class FavoriteMoviesFragment extends Fragment implements LoaderManager.Lo
                     Toast.makeText(getActivity(), "Deleted", Toast.LENGTH_SHORT).show();
                     loaderManager.restartLoader(LOADER_MANAGER_ID, null, FavoriteMoviesFragment.this);
                 }
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
             }
         }));
 
@@ -108,4 +111,5 @@ public class FavoriteMoviesFragment extends Fragment implements LoaderManager.Lo
         database.delete(TABLE_NAME, _ID + "=?", new String[]{id});
         database.close();
     }
+
 }

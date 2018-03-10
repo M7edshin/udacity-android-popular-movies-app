@@ -39,9 +39,13 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
     @Override
     public void onBindViewHolder(MoviesHolder holder, int position) {
         MovieDetails movieDetails = moviesList.get(position);
-        String createPosterPath = POSTER_PATH + movieDetails.getPoster();
-        Context context = holder.iv_movie_image.getContext();
-        Picasso.with(context).load(createPosterPath).into(holder.iv_movie_image);
+        if(movieDetails.getPoster().isEmpty()){
+            holder.iv_movie_image.setImageResource(R.drawable.no_poster);
+        }else{
+            String createPosterPath = POSTER_PATH + movieDetails.getPoster();
+            Context context = holder.iv_movie_image.getContext();
+            Picasso.with(context).load(createPosterPath).into(holder.iv_movie_image);
+        }
     }
 
     @Override

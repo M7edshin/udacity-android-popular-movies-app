@@ -4,12 +4,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.List;
 
 import m7edshin.popularmovieapp.R;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
  * Created by Mohamed Shahin on 02/03/2018.
@@ -32,8 +31,8 @@ public class TrailersRecyclerAdapter extends RecyclerView.Adapter<TrailersRecycl
 
     @Override
     public void onBindViewHolder(TrailersHolder holder, int position) {
-        holder.iv_play.setImageResource(R.drawable.ic_launcher_background);
-        holder.tv_name.setText(String.format("Trailer %s", String.valueOf(position + 1)));
+        holder.btn_trailer.setIconResource(R.drawable.ic_trailer);
+        holder.btn_trailer.setText("Trailer " + String.valueOf(position+1));
     }
 
     @Override
@@ -43,13 +42,11 @@ public class TrailersRecyclerAdapter extends RecyclerView.Adapter<TrailersRecycl
 
     public class TrailersHolder extends RecyclerView.ViewHolder{
 
-        private ImageView iv_play;
-        private TextView tv_name;
+        private FancyButton btn_trailer ;
 
         public TrailersHolder(View itemView) {
             super(itemView);
-            iv_play = itemView.findViewById(R.id.iv_play);
-            tv_name = itemView.findViewById(R.id.tv_name);
+            btn_trailer = itemView.findViewById(R.id.btn_trailer);
         }
     }
 }

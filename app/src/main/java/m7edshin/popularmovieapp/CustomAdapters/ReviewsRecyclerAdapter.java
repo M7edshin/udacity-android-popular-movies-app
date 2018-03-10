@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ms.square.android.expandabletextview.ExpandableTextView;
+
 import java.util.List;
 
 import m7edshin.popularmovieapp.Models.MovieReview;
@@ -45,7 +47,7 @@ public class ReviewsRecyclerAdapter extends RecyclerView.Adapter<ReviewsRecycler
     public class ReviewsHolder extends RecyclerView.ViewHolder{
 
         private TextView tv_author;
-        private TextView tv_review;
+        private ExpandableTextView tv_review;
 
         public ReviewsHolder(View itemView) {
             super(itemView);

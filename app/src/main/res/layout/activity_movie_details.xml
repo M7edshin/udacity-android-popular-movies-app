@@ -42,8 +42,6 @@
             android:layout_gravity="center"
             android:clickable="false"
             android:gravity="start|center"
-            android:progressTint="@color/colorAccent"
-            android:transformPivotX="0dp"
             android:theme="@style/RatingBar"/>
 
         <TextView
