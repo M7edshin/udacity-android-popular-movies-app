@@ -37,7 +37,7 @@ public class MoviesCursorAdapter extends RecyclerView.Adapter<MoviesCursorAdapte
 
     @Override
     public MoviesCursorAdapter.FavMoviesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fav_movie_recycler_item,
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_recycler_item,
                 parent, false);
         return new FavMoviesViewHolder(view);
     }
@@ -46,18 +46,8 @@ public class MoviesCursorAdapter extends RecyclerView.Adapter<MoviesCursorAdapte
     public void onBindViewHolder(MoviesCursorAdapter.FavMoviesViewHolder holder, int position) {
         if(cursor.moveToPosition(position)){
             int posterPathColumnIndex = cursor.getColumnIndex(COLUMN_POSTER_PATH);
-            int titleColumnIndex = cursor.getColumnIndex(COLUMN_TITLE);
-            int synopsisColumnIndex = cursor.getColumnIndex(COLUMN_SYNOPSIS);
-            int ratingColumnIndex = cursor.getColumnIndex(COLUMN_RATING);
-            int releaseDateColumnIndex = cursor.getColumnIndex(COLUMN_RELEASE_DATE);
-
             String posterPath = cursor.getString(posterPathColumnIndex);
-            String title = cursor.getString(titleColumnIndex);
-            String synopsis = cursor.getString(synopsisColumnIndex);
-            String rating = cursor.getString(ratingColumnIndex);
-            String releaseDate = cursor.getString(releaseDateColumnIndex);
-
-            holder.bind(posterPath,title,synopsis,rating,releaseDate);
+            holder.bind(posterPath);
         }
     }
 
@@ -67,29 +57,16 @@ public class MoviesCursorAdapter extends RecyclerView.Adapter<MoviesCursorAdapte
     }
 
     public class FavMoviesViewHolder extends RecyclerView.ViewHolder{
-        ImageView iv_fav_poster;
-        TextView tv_fav_title;
-        ReadMoreTextView tv_synopsis;
-        RatingBar rating_bar;
-        TextView tv_fav_release_date;
+        ImageView iv_movie_image;
 
         public FavMoviesViewHolder(View itemView) {
             super(itemView);
-            iv_fav_poster = itemView.findViewById(R.id.iv_fav_poster);
-            tv_fav_title = itemView.findViewById(R.id.tv_fav_title);
-            tv_synopsis = itemView.findViewById(R.id.tv_synopsis);
-            rating_bar = itemView.findViewById(R.id.rating_bar);
-            tv_fav_release_date = itemView.findViewById(R.id.tv_fav_release_date);
+            iv_movie_image = itemView.findViewById(R.id.iv_movie_image);
         }
 
-        public void bind(String posterPath, String title, String synopsis, String rating, String releaseDate){
+        public void bind(String posterPath){
             String path = POSTER_PATH + posterPath;
-            Picasso.with(itemView.getContext()).load(path).into(iv_fav_poster);
-            tv_fav_title.setText(title);
-            tv_synopsis.setText(synopsis);
-            tv_fav_release_date.setText(releaseDate);
-            rating_bar.setRating(Float.parseFloat(rating)/2);
-
+            Picasso.with(itemView.getContext()).load(path).into(iv_movie_image);
         }
     }
 

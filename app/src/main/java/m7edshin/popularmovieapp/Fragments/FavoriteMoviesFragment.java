@@ -1,13 +1,16 @@
 package m7edshin.popularmovieapp.Fragments;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Movie;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,7 +22,10 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import m7edshin.popularmovieapp.CustomAdapters.MoviesCursorAdapter;
+import m7edshin.popularmovieapp.FavMovieDetailsActivity;
+import m7edshin.popularmovieapp.InterfaceUtilities.ColumnsFitting;
 import m7edshin.popularmovieapp.InterfaceUtilities.RecyclerViewTouchListener;
+import m7edshin.popularmovieapp.Models.MovieDetails;
 import m7edshin.popularmovieapp.MoviesDatabase.DbSQLiteOpenHelper;
 import m7edshin.popularmovieapp.R;
 
@@ -43,6 +49,7 @@ public class FavoriteMoviesFragment extends Fragment implements LoaderManager.Lo
     private LoaderManager loaderManager;
     private Cursor cursor;
 
+    private final String MOVIE_INTENT_KEY = "movie";
 
     @Nullable
     @Override
@@ -52,7 +59,9 @@ public class FavoriteMoviesFragment extends Fragment implements LoaderManager.Lo
 
         tv_no_connection.setVisibility(View.INVISIBLE);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        //RecyclerView setup
+        int numberOfColumns = ColumnsFitting.calculateNoOfColumns(getActivity());
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
         recycle_view_movies.setLayoutManager(layoutManager);
 
         loaderManager = getLoaderManager();
@@ -61,6 +70,12 @@ public class FavoriteMoviesFragment extends Fragment implements LoaderManager.Lo
         recycle_view_movies.addOnItemTouchListener(new RecyclerViewTouchListener(getActivity(), recycle_view_movies, new RecyclerViewTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
+                if(cursor.moveToPosition(position)){
+                    MovieDetails movieDetails = prepareMovieDetails();
+                    Intent movieDetailsIntent = new Intent(getActivity(), FavMovieDetailsActivity.class);
+                    movieDetailsIntent.putExtra(MOVIE_INTENT_KEY, movieDetails);
+                    startActivity(movieDetailsIntent);
+                }
             }
 
             @Override
@@ -69,7 +84,7 @@ public class FavoriteMoviesFragment extends Fragment implements LoaderManager.Lo
                     int idColumnIndex = cursor.getColumnIndex(_ID);
                     String id = cursor.getString(idColumnIndex);
                     delete(id);
-                    Toast.makeText(getActivity(), "Deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.removed, Toast.LENGTH_SHORT).show();
                     loaderManager.restartLoader(LOADER_MANAGER_ID, null, FavoriteMoviesFragment.this);
                 }
             }
@@ -103,6 +118,24 @@ public class FavoriteMoviesFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         moviesCursorAdapter = new MoviesCursorAdapter(null);
+    }
+
+    private MovieDetails prepareMovieDetails(){
+        int idColumnIndex = cursor.getColumnIndex(_ID);
+        int posterPathColumnIndex = cursor.getColumnIndex(COLUMN_POSTER_PATH);
+        int titleColumnIndex = cursor.getColumnIndex(COLUMN_TITLE);
+        int synopsisColumnIndex = cursor.getColumnIndex(COLUMN_SYNOPSIS);
+        int ratingColumnIndex = cursor.getColumnIndex(COLUMN_RATING);
+        int releaseDateColumnIndex = cursor.getColumnIndex(COLUMN_RELEASE_DATE);
+
+        String id = cursor.getString(idColumnIndex);
+        String posterPath = cursor.getString(posterPathColumnIndex);
+        String title = cursor.getString(titleColumnIndex);
+        String synopsis = cursor.getString(synopsisColumnIndex);
+        String rating = cursor.getString(ratingColumnIndex);
+        String releaseDate = cursor.getString(releaseDateColumnIndex);
+
+        return new MovieDetails(id,title,releaseDate,posterPath,rating,synopsis);
     }
 
     private void delete(String id){

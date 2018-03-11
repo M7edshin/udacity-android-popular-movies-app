@@ -209,7 +209,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
 
         if(cursor.getCount() > 0){
             cursor.close();
-            Toast.makeText(getApplicationContext(), "Movie is already in your Fav", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.message_saved_movie, Toast.LENGTH_SHORT).show();
             database.close();
         }else {
             ContentValues values = new ContentValues();
@@ -222,9 +222,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             Uri newUri = getContentResolver().insert(CONTENT_URI, values);
 
             if(newUri == null){
-                Toast.makeText(this, "Error occurred to save this Movie", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.message_error_in_save_movie, Toast.LENGTH_SHORT).show();
             }else{
-                Toast.makeText(this, "Movie has been saved", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.message_saved, Toast.LENGTH_SHORT).show();
             }
 
             cursor.close();

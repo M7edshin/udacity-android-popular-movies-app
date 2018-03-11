@@ -7,4 +7,8 @@
     <string name="favorite">Favorite</string>
     <string name="trailer">Trailer</string>
     <string name="no_connection">No connection</string>
+    <string name="removed">Removed</string>
+    <string name="message_saved_movie">The Movie is already saved in your favorite list</string>
+    <string name="message_error_in_save_movie">Error occurred to save this Movie</string>
+    <string name="message_saved">Movie has been saved</string>
 </resources>

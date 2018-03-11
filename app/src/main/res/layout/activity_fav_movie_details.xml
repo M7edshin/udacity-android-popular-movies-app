@@ -2,8 +2,10 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
 
     <ImageView
         android:id="@+id/iv_fav_poster"
@@ -11,11 +13,11 @@
         android:layout_height="150dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/movie_poster"
         android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_synopsis"
-        app:srcCompat="@mipmap/ic_launcher"
-        android:contentDescription="@string/movie_poster" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/tv_fav_title"
@@ -26,7 +28,7 @@
         android:text="@string/placeholder"
         android:textColor="@color/colorWhite"
         app:layout_constraintStart_toEndOf="@+id/iv_fav_poster"
-        app:layout_constraintTop_toTopOf="@+id/iv_fav_poster" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_synopsis" />
 
     <RatingBar
         android:id="@+id/rating_bar"
@@ -42,23 +44,23 @@
         android:numStars="5"
         android:stepSize="0.1"
         android:theme="@style/RatingBar"
-        app:layout_constraintStart_toEndOf="@+id/iv_fav_poster"
-        app:layout_constraintTop_toBottomOf="@+id/tv_fav_title" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_fav_poster" />
 
     <TextView
         android:id="@+id/tv_fav_release_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/placeholder"
         android:textColor="@color/colorWhite"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_fav_poster" />
+        app:layout_constraintStart_toEndOf="@+id/iv_fav_poster"
+        app:layout_constraintTop_toBottomOf="@+id/tv_fav_title" />
 
     <com.borjabravo.readmoretextview.ReadMoreTextView
         android:id="@+id/tv_synopsis"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -66,12 +68,8 @@
         android:textColor="@color/colorWhite"
         android:textSize="15sp"
         app:colorClickableText="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="@+id/iv_fav_poster"
+        app:layout_constraintStart_toEndOf="@+id/iv_fav_poster"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#FFFFFF"/>
 
 </android.support.constraint.ConstraintLayout>

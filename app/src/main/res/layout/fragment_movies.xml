@@ -13,8 +13,7 @@
         android:id="@+id/recycle_view_movies"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:layout_centerInParent="true"/>
+        android:background="@color/colorPrimary"/>
 
     <TextView
         android:id="@+id/tv_no_connection"
