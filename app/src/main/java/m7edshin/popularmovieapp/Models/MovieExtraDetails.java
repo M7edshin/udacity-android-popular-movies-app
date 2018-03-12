@@ -9,15 +9,16 @@ import java.util.List;
 
 public class MovieExtraDetails {
 
-    private List<MovieReview> reviewsList;
+
+    private List<String> reviewsList;
     private List<String> videosList;
 
-    public MovieExtraDetails(List<MovieReview> reviewsList, List<String> videosList) {
+    public MovieExtraDetails(List<String> reviewsList, List<String> videosList) {
         this.reviewsList = reviewsList;
         this.videosList = videosList;
     }
 
-    public List<MovieReview> getReviewsList() {
+    public List<String> getReviewsList() {
         return reviewsList;
     }
 

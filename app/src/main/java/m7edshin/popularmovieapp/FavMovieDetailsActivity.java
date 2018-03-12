@@ -57,7 +57,7 @@ public class FavMovieDetailsActivity extends AppCompatActivity {
             Picasso.with(this).load(path).into(iv_fav_poster);
             tv_fav_title.setText(movieTitle);
             tv_synopsis.setText(movieSynopsis);
-            tv_fav_release_date.setText(movieReleaseDate);
+            tv_fav_release_date.setText(getString(R.string.release)+movieReleaseDate);
             rating_bar.setRating(Float.parseFloat(movieRating) / 2);
 
         }
@@ -74,5 +74,4 @@ public class FavMovieDetailsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

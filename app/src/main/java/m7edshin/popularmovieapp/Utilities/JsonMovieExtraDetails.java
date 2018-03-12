@@ -10,8 +10,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import m7edshin.popularmovieapp.Models.MovieReview;
-
 import static m7edshin.popularmovieapp.Utilities.Constants.NO_DATA;
 
 /**
@@ -55,13 +53,12 @@ public class JsonMovieExtraDetails {
         return videosList;
     }
 
-    public static List<MovieReview> extractJsonMovieReviews(String json){
+    public static List<String> extractJsonMovieReviews(String json){
 
         if(TextUtils.isEmpty(json)) return null;
 
-        List<MovieReview> movieReviewsList = new ArrayList<>();
+        List<String> movieReviewsList = new ArrayList<>();
         String review = NO_DATA;
-        String author = NO_DATA;
 
         try {
             JSONObject base = new JSONObject(json);
@@ -74,10 +71,7 @@ public class JsonMovieExtraDetails {
                 if(obj.has(KEY_CONTENT)){
                     review = obj.optString(KEY_CONTENT);
                 }
-                if(obj.has(KEY_AUTHOR)){
-                    author = obj.optString(KEY_AUTHOR);
-                }
-                movieReviewsList.add(new MovieReview(author, review));
+                movieReviewsList.add(review);
             }
 
         } catch (JSONException e) {

@@ -6,7 +6,6 @@ import android.content.Context;
 import java.util.List;
 
 import m7edshin.popularmovieapp.Models.MovieExtraDetails;
-import m7edshin.popularmovieapp.Models.MovieReview;
 
 /**
  * Created by Mohamed Shahin on 26/02/2018.
@@ -31,7 +30,7 @@ public class MovieExtraDetailsLoader extends AsyncTaskLoader<MovieExtraDetails> 
     public MovieExtraDetails loadInBackground() {
         if(url == null) return null;
 
-        List<MovieReview> reviewsList;
+        List<String> reviewsList;
         List<String> videosList;
 
         reviewsList = NetworkingRequest.fetchMovieReviews(url);
@@ -39,4 +38,5 @@ public class MovieExtraDetailsLoader extends AsyncTaskLoader<MovieExtraDetails> 
 
         return new MovieExtraDetails(reviewsList, videosList);
     }
+
 }

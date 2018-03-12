@@ -13,7 +13,6 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 import m7edshin.popularmovieapp.Models.MovieDetails;
-import m7edshin.popularmovieapp.Models.MovieReview;
 
 /**
  * Created by Mohamed Shahin on 17/02/2018.
@@ -128,7 +127,7 @@ class NetworkingRequest {
      * @param requestJsonUrl Json URL
      * @return List of movie reviews
      */
-    static List<MovieReview> fetchMovieReviews(String requestJsonUrl){
+    static List<String> fetchMovieReviews(String requestJsonUrl){
 
         String jsonResponse = "";
 

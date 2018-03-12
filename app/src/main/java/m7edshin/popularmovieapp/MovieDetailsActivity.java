@@ -1,13 +1,16 @@
 package m7edshin.popularmovieapp;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -17,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -30,12 +34,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import m7edshin.popularmovieapp.CustomAdapters.ReviewsRecyclerAdapter;
 import m7edshin.popularmovieapp.CustomAdapters.TrailersRecyclerAdapter;
 import m7edshin.popularmovieapp.InterfaceUtilities.RecyclerViewTouchListener;
 import m7edshin.popularmovieapp.Models.MovieDetails;
 import m7edshin.popularmovieapp.Models.MovieExtraDetails;
-import m7edshin.popularmovieapp.Models.MovieReview;
 import m7edshin.popularmovieapp.MoviesDatabase.DbSQLiteOpenHelper;
 import m7edshin.popularmovieapp.Utilities.MovieExtraDetailsLoader;
 
@@ -56,8 +58,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     @BindView(R.id.tv_release_date) TextView tv_release_date;
     @BindView(R.id.iv_poster) ImageView iv_poster;
     @BindView(R.id.rv_trailers) RecyclerView rv_trailers;
-    @BindView(R.id.rv_reviews) RecyclerView rv_reviews;
     @BindView(R.id.rating_bar) RatingBar rating_bar;
+    @BindView(R.id.btn_reviews) Button btn_reviews;
 
     private String movieID;
     private String movieTitle;
@@ -70,6 +72,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
 
     private List<String> videoKeyList;
 
+    String reviews = "";
+
+    RecyclerView.LayoutManager trailersLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,11 +87,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        RecyclerView.LayoutManager trailersLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        trailersLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rv_trailers.setLayoutManager(trailersLayoutManager);
-
-        RecyclerView.LayoutManager reviewsLayoutManager = new LinearLayoutManager(this);
-        rv_reviews.setLayoutManager(reviewsLayoutManager);
 
         //Getting the data passed from the MoviesActivity
         Intent intentThatStartedThisActivity = getIntent();
@@ -102,6 +104,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             populateMovieDetails();
             populateExtraMovieDetails();
         }
+
 
     }
 
@@ -156,26 +159,55 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public void onLoadFinished(Loader<MovieExtraDetails> loader, MovieExtraDetails data) {
-        List<MovieReview> reviewsList = new ArrayList<>(data.getReviewsList());
-        ReviewsRecyclerAdapter reviewsRecyclerAdapter = new ReviewsRecyclerAdapter(reviewsList);
-        rv_reviews.setAdapter(reviewsRecyclerAdapter);
+
+        for(String s : data.getReviewsList()){
+            reviews = s + "\n";
+        }
+
+        btn_reviews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(reviews.isEmpty()){
+                    Toast.makeText(getApplicationContext(), "There are no reviews available", Toast.LENGTH_SHORT).show();
+                }else{
+                    AlertDialog.Builder builder;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        builder = new AlertDialog.Builder(MovieDetailsActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+                    } else {
+                        builder = new AlertDialog.Builder(MovieDetailsActivity.this);
+                    }
+                    builder.setTitle("Movie Reviews")
+                            .setMessage(reviews)
+
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_menu_info_details)
+                            .show();
+                }
+
+            }
+        });
 
         videoKeyList = new ArrayList<>(data.getVideosList());
         TrailersRecyclerAdapter trailersRecyclerAdapter = new TrailersRecyclerAdapter(videoKeyList);
         rv_trailers.setAdapter(trailersRecyclerAdapter);
         rv_trailers.addOnItemTouchListener(new RecyclerViewTouchListener(this, rv_trailers,
                 new RecyclerViewTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                String videoKey = videoKeyList.get(position);
-                playTrailer(MovieDetailsActivity.this, videoKey);
-            }
+                    @Override
+                    public void onClick(View view, int position) {
+                        String videoKey = videoKeyList.get(position);
+                        playTrailer(MovieDetailsActivity.this, videoKey);
+                    }
 
-            @Override
-            public void onLongClick(View view, int position) {
+                    @Override
+                    public void onLongClick(View view, int position) {
 
-            }
-        }));
+                    }
+                }));
 
     }
 
@@ -193,9 +225,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         Intent openAppIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + key));
         Intent openBrowserIntent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse("http://www.youtube.com/watch?v=" + key));
-        try {
+
+        if(openAppIntent.resolveActivity(getPackageManager())!=null){
             context.startActivity(openAppIntent);
-        } catch (Exception ex) {
+        }else{
             context.startActivity(openBrowserIntent);
         }
     }
