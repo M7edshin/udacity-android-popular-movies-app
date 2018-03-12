@@ -13,8 +13,10 @@ import m7edshin.popularmovieapp.InterfaceUtilities.FragmentPageAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.view_pager) ViewPager view_pager;
-    @BindView(R.id.pager_sliding_tabs) PagerSlidingTabStrip pager_sliding_tabs;
+    @BindView(R.id.view_pager)
+    ViewPager view_pager;
+    @BindView(R.id.pager_sliding_tabs)
+    PagerSlidingTabStrip pager_sliding_tabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
