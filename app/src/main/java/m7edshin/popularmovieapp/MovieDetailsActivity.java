@@ -2,6 +2,7 @@ package m7edshin.popularmovieapp;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -48,6 +49,7 @@ import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.C
 import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.COLUMN_TITLE;
 import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.CONTENT_URI;
 import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.TABLE_NAME;
+import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry._ID;
 import static m7edshin.popularmovieapp.Utilities.Constants.LOADER_MANAGER_ID;
 import static m7edshin.popularmovieapp.Utilities.Constants.MOVIE_API_URL;
 import static m7edshin.popularmovieapp.Utilities.Constants.POSTER_PATH;
@@ -235,15 +237,14 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
 
     private void saveMovieDetails(){
 
-        DbSQLiteOpenHelper dbSQLiteOpenHelper = new DbSQLiteOpenHelper(this);
-        SQLiteDatabase database = dbSQLiteOpenHelper.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + "Title = '" + movieTitle + "'";
-        Cursor cursor = database.rawQuery(query, null);
+        ContentResolver resolver = getContentResolver();
+        String[] projection = {_ID, COLUMN_TITLE, COLUMN_SYNOPSIS, COLUMN_POSTER_PATH, COLUMN_RATING, COLUMN_RELEASE_DATE};
+        String contain = movieTitle;
+        Cursor cursor = resolver.query(CONTENT_URI, projection, COLUMN_TITLE + " LIKE ?", new String[]{contain}, null);
 
         if(cursor.getCount() > 0){
             cursor.close();
             Toast.makeText(getApplicationContext(), R.string.message_saved_movie, Toast.LENGTH_SHORT).show();
-            database.close();
         }else {
             ContentValues values = new ContentValues();
             values.put(COLUMN_TITLE, movieTitle);
@@ -259,9 +260,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             }else{
                 Toast.makeText(this, R.string.message_saved, Toast.LENGTH_SHORT).show();
             }
-
             cursor.close();
-            database.close();
         }
 
     }
