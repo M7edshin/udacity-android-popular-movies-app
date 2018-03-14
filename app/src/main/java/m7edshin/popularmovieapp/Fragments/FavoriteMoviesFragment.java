@@ -3,7 +3,6 @@ package m7edshin.popularmovieapp.Fragments;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Movie;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,7 +10,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +38,7 @@ import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry._
 import static m7edshin.popularmovieapp.Utilities.Constants.LOADER_MANAGER_ID;
 
 public class FavoriteMoviesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
 
     @BindView(R.id.recycle_view_movies) RecyclerView recycle_view_movies;
     @BindView(R.id.tv_no_connection) TextView tv_no_connection;
@@ -144,5 +143,6 @@ public class FavoriteMoviesFragment extends Fragment implements LoaderManager.Lo
         database.delete(TABLE_NAME, _ID + "=?", new String[]{id});
         database.close();
     }
+
 
 }

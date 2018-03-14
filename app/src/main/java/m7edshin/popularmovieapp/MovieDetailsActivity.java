@@ -9,10 +9,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +39,6 @@ import m7edshin.popularmovieapp.CustomAdapters.TrailersRecyclerAdapter;
 import m7edshin.popularmovieapp.InterfaceUtilities.RecyclerViewTouchListener;
 import m7edshin.popularmovieapp.Models.MovieDetails;
 import m7edshin.popularmovieapp.Models.MovieExtraDetails;
-import m7edshin.popularmovieapp.MoviesDatabase.DbSQLiteOpenHelper;
 import m7edshin.popularmovieapp.Utilities.MovieExtraDetailsLoader;
 
 import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.COLUMN_POSTER_PATH;
@@ -48,7 +47,6 @@ import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.C
 import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.COLUMN_SYNOPSIS;
 import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.COLUMN_TITLE;
 import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.CONTENT_URI;
-import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry.TABLE_NAME;
 import static m7edshin.popularmovieapp.MoviesDatabase.DbContract.DatabaseEntry._ID;
 import static m7edshin.popularmovieapp.Utilities.Constants.LOADER_MANAGER_ID;
 import static m7edshin.popularmovieapp.Utilities.Constants.MOVIE_API_URL;
@@ -72,11 +70,15 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
 
     private static final String MOVIE_API_KEY = BuildConfig.API_KEY;
 
+    private LinearLayoutManager layoutManager;
+    private TrailersRecyclerAdapter trailersRecyclerAdapter;
+
     private List<String> videoKeyList;
 
-    String reviews = "";
+    private String reviews = "";
 
-    RecyclerView.LayoutManager trailersLayoutManager;
+    private Parcelable saveState;
+    private final String STATE_KEY = "state";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +91,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        trailersLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        rv_trailers.setLayoutManager(trailersLayoutManager);
+        layoutManager =  new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        rv_trailers.setLayoutManager(layoutManager);
 
         //Getting the data passed from the MoviesActivity
         Intent intentThatStartedThisActivity = getIntent();
@@ -171,7 +173,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             public void onClick(View view) {
 
                 if(reviews.isEmpty()){
-                    Toast.makeText(getApplicationContext(), "There are no reviews available", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.reviews_not_available, Toast.LENGTH_SHORT).show();
                 }else{
                     AlertDialog.Builder builder;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -179,7 +181,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
                     } else {
                         builder = new AlertDialog.Builder(MovieDetailsActivity.this);
                     }
-                    builder.setTitle("Movie Reviews")
+                    builder.setTitle(R.string.movie_reviews)
                             .setMessage(reviews)
 
                             .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -195,7 +197,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         });
 
         videoKeyList = new ArrayList<>(data.getVideosList());
-        TrailersRecyclerAdapter trailersRecyclerAdapter = new TrailersRecyclerAdapter(videoKeyList);
+        trailersRecyclerAdapter = new TrailersRecyclerAdapter(videoKeyList);
         rv_trailers.setAdapter(trailersRecyclerAdapter);
         rv_trailers.addOnItemTouchListener(new RecyclerViewTouchListener(this, rv_trailers,
                 new RecyclerViewTouchListener.ClickListener() {
@@ -211,6 +213,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
                     }
                 }));
 
+        layoutManager.onRestoreInstanceState(saveState);
+
     }
 
     private void populateExtraMovieDetails(){
@@ -220,7 +224,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public void onLoaderReset(Loader<MovieExtraDetails> loader) {
-        //Nothing
+
     }
 
     private void playTrailer(Context context, String key){
@@ -276,8 +280,32 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             startActivity(Intent.createChooser(sharingIntent, "Enjoy"));
 
         }else{
-            Toast.makeText(getApplicationContext(), "No trailer available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.no_trailer_available, Toast.LENGTH_SHORT).show();
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(outState!=null){
+            saveState = layoutManager.onSaveInstanceState();
+            outState.putParcelable(STATE_KEY, saveState);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            saveState = savedInstanceState.getParcelable(STATE_KEY);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(saveState != null){
+            layoutManager.onRestoreInstanceState(saveState);
+        }
+    }
 }

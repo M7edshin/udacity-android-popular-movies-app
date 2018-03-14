@@ -1,5 +1,6 @@
 package m7edshin.popularmovieapp.Fragments;
 
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -53,12 +54,15 @@ public class TopRatedMoviesFragment extends Fragment implements LoaderManager.Lo
     private static final String MOVIE_API_KEY = BuildConfig.API_KEY;
 
     private MoviesRecyclerAdapter moviesRecyclerAdapter;
+    private GridLayoutManager layoutManager;
 
 
     private final String MOVIE_INTENT_KEY = "movie";
 
     private List<MovieDetails> moviesList;
 
+    private Parcelable saveState;
+    private final String STATE_KEY = "state";
 
     @Nullable
     @Override
@@ -70,7 +74,7 @@ public class TopRatedMoviesFragment extends Fragment implements LoaderManager.Lo
 
         //RecyclerView setup
         int numberOfColumns = ColumnsFitting.calculateNoOfColumns(getActivity());
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
+        layoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
         recycle_view_movies.setLayoutManager(layoutManager);
 
         fetchMovieData();
@@ -109,6 +113,7 @@ public class TopRatedMoviesFragment extends Fragment implements LoaderManager.Lo
             moviesList = data;
             moviesRecyclerAdapter = new MoviesRecyclerAdapter(moviesList);
             recycle_view_movies.setAdapter(moviesRecyclerAdapter);
+            layoutManager.onRestoreInstanceState(saveState);
         }else{
             tv_no_connection.setVisibility(View.VISIBLE);
         }
@@ -149,4 +154,28 @@ public class TopRatedMoviesFragment extends Fragment implements LoaderManager.Lo
         return builder.build().toString();
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            saveState = savedInstanceState.getParcelable(STATE_KEY);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(outState!=null){
+            saveState = layoutManager.onSaveInstanceState();
+            outState.putParcelable(STATE_KEY, saveState);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(saveState != null){
+            layoutManager.onRestoreInstanceState(saveState);
+        }
+    }
 }
