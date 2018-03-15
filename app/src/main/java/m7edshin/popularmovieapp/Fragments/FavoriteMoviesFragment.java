@@ -1,5 +1,6 @@
 package m7edshin.popularmovieapp.Fragments;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -44,7 +45,6 @@ public class FavoriteMoviesFragment extends Fragment implements LoaderManager.Lo
     @BindView(R.id.tv_no_connection) TextView tv_no_connection;
 
     private MoviesCursorAdapter moviesCursorAdapter;
-    private DbSQLiteOpenHelper dbSQLiteOpenHelper;
     private LoaderManager loaderManager;
     private Cursor cursor;
 
@@ -138,10 +138,8 @@ public class FavoriteMoviesFragment extends Fragment implements LoaderManager.Lo
     }
 
     private void delete(String id){
-        dbSQLiteOpenHelper = new DbSQLiteOpenHelper(getActivity());
-        SQLiteDatabase database = dbSQLiteOpenHelper.getReadableDatabase();
-        database.delete(TABLE_NAME, _ID + "=?", new String[]{id});
-        database.close();
+        ContentResolver resolver = getActivity().getContentResolver();
+        resolver.delete(CONTENT_URI,_ID + "=?",new String[]{id});
     }
 
 

@@ -91,7 +91,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        layoutManager =  new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        layoutManager =  new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rv_trailers.setLayoutManager(layoutManager);
 
         //Getting the data passed from the MoviesActivity
