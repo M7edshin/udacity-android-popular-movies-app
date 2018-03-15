@@ -1,5 +1,5 @@
 # Note 
-In order to test the code, please add your personal "The Movie Database API 'https://www.themoviedb.org' " into the "gradle.properties" in project files > Add line > API_KEY="Your API Digits"
+In order to test the code, please add your personal API KEY "The Movie Database API 'https://www.themoviedb.org' " into the "gradle.properties" in project files > Add line > API_KEY="Your API Digits"
 ________________________________________________________________________________________________________________________________
 
 ### This project is implemented on two stages please read throught to understand what was involved in Stage 1 and Stage 2. Additionally, I have added more features than required
