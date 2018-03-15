@@ -39,6 +39,5 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.jpardogo.materialtabstrip:library:1.1.1'
     implementation 'com.borjabravo:readmoretextview:2.1.0'
-    implementation 'com.ms-square:expandableTextView:0.1.4'
     implementation 'com.github.medyo:fancybuttons:1.8.4'
 }
