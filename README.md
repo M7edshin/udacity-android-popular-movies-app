@@ -1,4 +1,5 @@
-#Note: In order to test the code, please add your personal "The Movie Database API 'https://www.themoviedb.org' " into the "gradle.properties" in project files > Add line > API_KEY="Your API Digits"
+# Note 
+In order to test the code, please add your personal API KEY "The Movie Database API 'https://www.themoviedb.org' " into the "gradle.properties" in project files > Add line > API_KEY="Your API Digits"
 ________________________________________________________________________________________________________________________________
 
 ### This project is implemented on two stages please read throught to understand what was involved in Stage 1 and Stage 2. Additionally, I have added more features than required
@@ -24,6 +25,29 @@ Welcome back to Popular Movies! In this second and final stage, you’ll add add
 * You will build a fully featured application that looks and feels natural on the latest Android operating system (Nougat, as of November 2016).
 
 ________________________________________________________________________________________________________________________________
+# My Project Completion
+
+## Screenshots
+![alt text](https://i.imgur.com/NWptJUY.jpg?1)![alt text](https://i.imgur.com/Qv8oIpN.jpg?1) ![alt text](https://i.imgur.com/VS0zZq2.jpg?1)![alt text](https://i.imgur.com/r9iJOMw.jpg?1)![alt text](https://i.imgur.com/MRWKHrz.jpg?1)![alt text](https://i.imgur.com/G0jiq1Q.jpg?1)
+
+## Libraries & Implementations & Additional Content
+* [ButterKnife](https://github.com/JakeWharton/butterknife) 
+
+* [Picasso](https://github.com/square/picasso) 
+
+* [PagerSlidingTabStrip](https://github.com/yuvraaz/slidingpager) 
+
+* [ReadMoreTextView](https://github.com/bravoborja/ReadMoreTextView)
+
+* [FancyButtons](https://github.com/medyo/Fancybuttons) 
+________________________________________________________________________________________________________________________________
+
+## Why this Project
+
+To become an Android developer, you must know how to bring particular mobile experiences to life. Specifically, you need to know how to build clean and compelling user interfaces (UIs), fetch data from network services, and optimize the experience for various mobile devices. You will hone these fundamental skills in this project.
+
+By building this app, you will demonstrate your understanding of the foundational elements of programming for Android. Your app will communicate with the Internet and provide a responsive and delightful user experience.
+________________________________________________________________________________________________________________________________
 
 # Popular Movies, Stage 1
 
@@ -45,16 +69,8 @@ You app will:
   * user rating (called vote_average in the api)
   * release date
 
-## Why this Project
-
-To become an Android developer, you must know how to bring particular mobile experiences to life. Specifically, you need to know how to build clean and compelling user interfaces (UIs), fetch data from network services, and optimize the experience for various mobile devices. You will hone these fundamental skills in this project.
-
-By building this app, you will demonstrate your understanding of the foundational elements of programming for Android. Your app will communicate with the Internet and provide a responsive and delightful user experience.
-
 ## What Will I Learn After Stage 1?
 
 * You will fetch data from the Internet with theMovieDB API.
 * You will use adapters and custom list layouts to populate list views.
 * You will incorporate libraries to simplify the amount of code you need to write
-
-
