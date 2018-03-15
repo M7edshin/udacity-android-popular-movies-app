@@ -25,7 +25,7 @@ Welcome back to Popular Movies! In this second and final stage, you’ll add add
 * You will build a fully featured application that looks and feels natural on the latest Android operating system (Nougat, as of November 2016).
 
 ________________________________________________________________________________________________________________________________
-# Project Completion
+# My Project Completion
 
 ## Screenshots
 ![alt text](https://i.imgur.com/NWptJUY.jpg?1)![alt text](https://i.imgur.com/Qv8oIpN.jpg?1) ![alt text](https://i.imgur.com/VS0zZq2.jpg?1)![alt text](https://i.imgur.com/r9iJOMw.jpg?1)![alt text](https://i.imgur.com/MRWKHrz.jpg?1)![alt text](https://i.imgur.com/G0jiq1Q.jpg?1)
